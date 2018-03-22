@@ -68,7 +68,7 @@ end
 
 service 'aem-publish' do
   # init script returns 0 for status no matter what
-  status_command 'service aem-publish status | grep running'
+  status_command 'SYSTEMD_PAGER="" service aem-publish status'
   supports status: true, stop: true, start: true, restart: true
   action [:enable, :start]
 end
@@ -77,7 +77,7 @@ if node[:aem][:version].to_f > 5.4
   node[:aem][:publish][:validation_urls].each do |url|
     aem_url_watcher url do
       validation_url url
-      status_command 'service aem-publish status | grep running'
+      status_command 'SYSTEMD_PAGER="" service aem-publish status'
       max_attempts node[:aem][:publish][:startup][:max_attempts]
       wait_between_attempts node[:aem][:publish][:startup][:wait_between_attempts]
       user node[:aem][:publish][:admin_user]
@@ -87,7 +87,7 @@ if node[:aem][:version].to_f > 5.4
   end
 else
   aem_port_watcher '4503' do
-    status_command 'service aem-publish status | grep running'
+    status_command 'SYSTEMD_PAGER="" service aem-publish status'
     action :wait
   end
 end
