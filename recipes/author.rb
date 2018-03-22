@@ -68,7 +68,7 @@ end
 
 service 'aem-author' do
   # init script returns 0 for status no matter what
-  status_command 'service aem-author status | grep running'
+  status_command 'SYSTEMD_PAGER="" service aem-author status'
   supports status: true, stop: true, start: true, restart: true
   action [:enable, :start]
 end
@@ -77,7 +77,7 @@ if node[:aem][:version].to_f > 5.4
   node[:aem][:author][:validation_urls].each do |url|
     aem_url_watcher url do
       validation_url url
-      status_command 'service aem-author status | grep running'
+      status_command 'SYSTEMD_PAGER="" service aem-author status'
       max_attempts node[:aem][:author][:startup][:max_attempts]
       wait_between_attempts node[:aem][:author][:startup][:wait_between_attempts]
       user node[:aem][:author][:admin_user]
@@ -87,7 +87,7 @@ if node[:aem][:version].to_f > 5.4
   end
 else
   aem_port_watcher '4502' do
-    status_command 'service aem-author status | grep running'
+    status_command 'SYSTEMD_PAGER="" service aem-author status'
     action :wait
   end
 end
